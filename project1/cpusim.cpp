@@ -31,8 +31,10 @@ int main(int argc, char *argv[])
 #if 1
 	cerr << "addr | " << setw(19) << "| " << "  imm | rd | rs1 | rs2 |  opcode | registers" << endl;
 #endif
+	int nInstructions = 0;
 	for (;;)
 	{
+		nInstructions++;
 		// Fetch
 		bitset<32> instruction = memory.fetchInstruction(pc);
 
@@ -47,6 +49,7 @@ int main(int argc, char *argv[])
 		bitset<4> aluOpcode = aluControl(instruction, controlSignals.aluOp);
 
 #if 1
+		cerr << instruction << endl;
 		cerr << setw(4) << pc << " | " << controlSignals.jump << " " << controlSignals.branch << " " << controlSignals.memRead << " "
 			<< controlSignals.memToReg << " " << controlSignals.aluOp << " " << controlSignals.memWrite << " "
 			<< controlSignals.aluSrc << " " << controlSignals.regWrite << " | " << setw(5) << immediate
@@ -61,7 +64,7 @@ int main(int argc, char *argv[])
 		int aluInput2 = controlSignals.aluSrc ? immediate : readData2;
 		int aluResult = alu(readData1, aluInput2, aluOpcode);
 		bool aluSignBit = (aluResult >> 31) & 1;
-		cerr << "alu data1=" << readData1 << " data2=" << aluInput2 << " opcode=" << aluOpcode << " result=" << aluResult << endl;
+		// cerr << "alu data1=" << readData1 << " data2=" << aluInput2 << " opcode=" << aluOpcode << " result=" << aluResult << endl;
 
 		// Memory
 		int memoryReadData = memory.accessData(aluResult, readData2, controlSignals.memRead, controlSignals.memWrite);
@@ -78,6 +81,7 @@ int main(int argc, char *argv[])
 	int a0 = registers.get(10);
 	int a1 = registers.get(11);
 	cout << "(" << a0 << "," << a1 << ")" << endl;
+	cerr << nInstructions << " total instructions" << endl;
 
 	return 0;
 }

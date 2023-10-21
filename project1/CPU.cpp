@@ -60,14 +60,15 @@ Memory::Memory(const char *filename, unsigned int &maxPc)
 	}
 	string line;
 	int i = 0;
+	infile >> line;
 	while (infile)
 	{
-		infile >> line;
 		stringstream line2(line);
 		int x;
 		line2 >> x;
 		this->instructions[i] = bitset<8>(x);
 		i++;
+		infile >> line;
 	}
 	maxPc = i;
 	for (int i = 0; i < 4096; i++)
@@ -139,7 +140,7 @@ int immediateGenerator(bitset<32> instruction)
 		return bTypeImmediate;
 	if (!instruction[6] && instruction[5] && !instruction[4])
 		return sTypeImmediate;
-	cerr << "itype " << iTypeImmediate << endl;
+	// cerr << "itype " << iTypeImmediate << endl;
 	return iTypeImmediate;
 }
 
