@@ -28,9 +28,6 @@ int main(int argc, char *argv[])
 
 	unsigned int pc = 0;
 
-#if 1
-	cerr << "addr | " << setw(19) << "| " << "  imm | rd | rs1 | rs2 |  opcode | registers" << endl;
-#endif
 	int nInstructions = 0;
 	for (;;)
 	{
@@ -48,23 +45,10 @@ int main(int argc, char *argv[])
 		ControlSignals controlSignals = mainController(decodedInsn.opcode);
 		bitset<4> aluOpcode = aluControl(instruction, controlSignals.aluOp);
 
-#if 1
-		cerr << instruction << endl;
-		cerr << setw(4) << pc << " | " << controlSignals.jump << " " << controlSignals.branch << " " << controlSignals.memRead << " "
-			<< controlSignals.memToReg << " " << controlSignals.aluOp << " " << controlSignals.memWrite << " "
-			<< controlSignals.aluSrc << " " << controlSignals.regWrite << " | " << setw(5) << immediate
-			<< " | " << setw(2) << decodedInsn.rd.to_ulong() << " | " << setw(3) << decodedInsn.rs1.to_ulong() << " | " 
-			<< setw(3) << decodedInsn.rs2.to_ulong() << " | " << setw(7) << decodedInsn.opcode << " | ";
-		for (int i = 0; i < 12; i++)
-			cerr << setw(3) << registers.get(i) << " ";
-		cerr << endl;
-#endif
-
 		// Execution
 		int aluInput2 = controlSignals.aluSrc ? immediate : readData2;
 		int aluResult = alu(readData1, aluInput2, aluOpcode);
 		bool aluSignBit = (aluResult >> 31) & 1;
-		// cerr << "alu data1=" << readData1 << " data2=" << aluInput2 << " opcode=" << aluOpcode << " result=" << aluResult << endl;
 
 		// Memory
 		int memoryReadData = memory.accessData(aluResult, readData2, controlSignals.memRead, controlSignals.memWrite);
