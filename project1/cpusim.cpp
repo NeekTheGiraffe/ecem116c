@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
 	unsigned int pc = 0;
 
-#if 0
+#if 1
 	cerr << "addr | " << setw(19) << "| " << "  imm | rd | rs1 | rs2 |  opcode | registers" << endl;
 #endif
 	for (;;)
@@ -40,20 +40,20 @@ int main(int argc, char *argv[])
 		if (instruction == 0)
 			break;
 		DecodedInstruction decodedInsn = decode(instruction);
-		int readData1 = registers[decodedInsn.rs1];
-		int readData2 = registers[decodedInsn.rs2];
+		int readData1 = registers.get(decodedInsn.rs1);
+		int readData2 = registers.get(decodedInsn.rs2);
 		int immediate = immediateGenerator(instruction);
 		ControlSignals controlSignals = mainController(decodedInsn.opcode);
 		bitset<4> aluOpcode = aluControl(instruction, controlSignals.aluOp);
 
-#if 0
+#if 1
 		cerr << setw(4) << pc << " | " << controlSignals.jump << " " << controlSignals.branch << " " << controlSignals.memRead << " "
 			<< controlSignals.memToReg << " " << controlSignals.aluOp << " " << controlSignals.memWrite << " "
 			<< controlSignals.aluSrc << " " << controlSignals.regWrite << " | " << setw(5) << immediate
 			<< " | " << setw(2) << decodedInsn.rd.to_ulong() << " | " << setw(3) << decodedInsn.rs1.to_ulong() << " | " 
 			<< setw(3) << decodedInsn.rs2.to_ulong() << " | " << setw(7) << decodedInsn.opcode << " | ";
 		for (int i = 0; i < 12; i++)
-			cerr << setw(3) << registers[i] << " ";
+			cerr << setw(3) << registers.get(i) << " ";
 		cerr << endl;
 #endif
 
@@ -61,6 +61,7 @@ int main(int argc, char *argv[])
 		int aluInput2 = controlSignals.aluSrc ? immediate : readData2;
 		int aluResult = alu(readData1, aluInput2, aluOpcode);
 		bool aluSignBit = (aluResult >> 31) & 1;
+		cerr << "alu data1=" << readData1 << " data2=" << aluInput2 << " opcode=" << aluOpcode << " result=" << aluResult << endl;
 
 		// Memory
 		int memoryReadData = memory.accessData(aluResult, readData2, controlSignals.memRead, controlSignals.memWrite);
@@ -71,11 +72,11 @@ int main(int argc, char *argv[])
 		int memoryResult = controlSignals.memToReg ? memoryReadData : aluResult;
 		int registerWriteData = controlSignals.jump ? nextPcSequential : memoryResult;
 		bool shouldJump = controlSignals.jump || (controlSignals.branch && aluSignBit);
-		registers[decodedInsn.rd] = registerWriteData;
+		registers.set(decodedInsn.rd, registerWriteData);
 		pc = shouldJump ? nextPcJump : nextPcSequential;
 	}
-	int a0 = registers[10];
-	int a1 = registers[11];
+	int a0 = registers.get(10);
+	int a1 = registers.get(11);
 	cout << "(" << a0 << "," << a1 << ")" << endl;
 
 	return 0;

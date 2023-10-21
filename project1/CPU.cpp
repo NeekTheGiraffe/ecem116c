@@ -139,6 +139,7 @@ int immediateGenerator(bitset<32> instruction)
 		return bTypeImmediate;
 	if (!instruction[6] && instruction[5] && !instruction[4])
 		return sTypeImmediate;
+	cerr << "itype " << iTypeImmediate << endl;
 	return iTypeImmediate;
 }
 
@@ -151,7 +152,7 @@ bitset<4> aluControl(bitset<32> instruction, bitset<2> aluOp)
 	bitset<4> result;
 	result[0] = 0;
 	result[1] = !aluOp[1] | funct3 == 0b000;
-	result[2] = aluOp == 0b01 | (aluOp[1] & (funct3 == 0b100 | (funct3 == 0b000 & instruction[30])));
+	result[2] = aluOp == 0b01 | (aluOp == 0b10 & (funct3 == 0b100 | (funct3 == 0b000 & instruction[30])));
 	result[3] = aluOp == 0b10 & funct3 == 0b101;
 	return result;
 }

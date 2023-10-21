@@ -16,13 +16,19 @@ struct Memory
 	int accessData(unsigned int address, int writeData, bool memRead, bool memWrite);
 };
 
-struct RegisterFile
+class RegisterFile
 {
-	array<int, 32> registers;
-
+public:
 	RegisterFile() { registers.fill(0); }
-	int &operator[](bitset<5> i) { return registers[i.to_ulong()]; }
-	const int &operator[](bitset<5> i) const { return registers[i.to_ulong()]; }
+	void set(bitset<5> i, int value) {
+		if (i != 0)
+			registers[i.to_ulong()] = value;
+	}
+	int get(bitset<5> i) {
+		return registers[i.to_ulong()];
+	}
+private:
+	array<int, 32> registers;
 };
 
 struct DecodedInstruction

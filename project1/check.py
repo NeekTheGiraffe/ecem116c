@@ -5,6 +5,7 @@ TESTS = [
     ('23instMem-r.txt', b'(-8,23)\n'),
     ('23instMem-sw.txt', b'(9,17)\n'),
     ('23instMem-all.txt', b'(40,1)\n'),
+    ('sign-extension.txt', b'(-7,-26)\n'),
 ]
 EXECUTABLE_PATH = './cpusim'
 TESTS_DIRECTORY = 'trace/'
