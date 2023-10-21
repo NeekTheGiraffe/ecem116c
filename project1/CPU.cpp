@@ -86,8 +86,9 @@ int Memory::accessData(unsigned int address, int writeData, bool memRead, bool m
 {
 	if (memWrite)
 	{
+		cerr << "memWrite @ " << address << " <- " << writeData << endl;
 		for (int i = 0; i < 4; i++)
-			data[address + i] = writeData << (8 * i);
+			data[address + i] = writeData >> (8 * i);
 	}
 	if (!memRead)
 		return 0;
@@ -95,6 +96,7 @@ int Memory::accessData(unsigned int address, int writeData, bool memRead, bool m
 	int result = 0;
 	for (int i = 0; i < 4; i++)
 		result += data[address + i].to_ulong() << (8 * i);
+	cerr << "memRead @ " << address << " -> " << result << endl;
 	return result;
 }
 
@@ -139,7 +141,10 @@ int immediateGenerator(bitset<32> instruction)
 	if (instruction[6] && !instruction[2])
 		return bTypeImmediate;
 	if (!instruction[6] && instruction[5] && !instruction[4])
+	{
+		cerr << "stype " << sTypeImmediate << endl;
 		return sTypeImmediate;
+	}
 	// cerr << "itype " << iTypeImmediate << endl;
 	return iTypeImmediate;
 }
