@@ -1,9 +1,12 @@
+#pragma once
+
+#include "utils.h"
+
 #include <iostream>
 #include <bitset>
 #include <stdio.h>
-#include<stdlib.h>
+#include <stdlib.h>
 #include <string>
-using namespace std;
 
 #define L1_CACHE_SETS 16
 #define L2_CACHE_SETS 16
@@ -14,47 +17,38 @@ using namespace std;
 #define DM 0
 #define SA 1
 
+struct CacheBlock
+{
+	int tag;
+	int lruPosition;
+	uint32_t data;
+	bool valid;
+};
+
+struct Stats
+{
+	float l1MissRate;
+	float l2MissRate;
+	float aat;
+};
+
 class Memory
 {
-
-};
-
-
-
-
-
-struct cacheBlock
-{
-	int tag; // you need to compute offset and index to find the tag.
-	int lru_position; // for SA only
-	int data; // the actual data stored in the cache/memory
-	bool valid;
-	// add more things here if needed
-};
-
-struct Stat
-{
-	int missL1; 
-	int missL2; 
-	int accL1;
-	int accL2;
-	int accVic;
-	int missVic;
-	// add more stat if needed. Don't forget to initialize!
-};
-
-class cache {
-private:
-	cacheBlock L1[L1_CACHE_SETS]; // 1 set per row.
-	cacheBlock L2[L2_CACHE_SETS][L2_CACHE_WAYS]; // x ways per row 
-	// Add your Victim cache here ...
-	
-	Stat myStat;
-	// add more things here
 public:
-	cache();
-	void controller(bool MemR, bool MemW, int* data, int adr, int* myMem);
-	// add more functions here ...	
+	Memory();
+	void controller(const Instruction& instruction);
+	Stats stats() const;
+private:
+	CacheBlock m_l1[L1_CACHE_SETS];
+	CacheBlock m_v[VICTIM_SIZE];
+	CacheBlock m_l2[L2_CACHE_SETS * L2_CACHE_WAYS];
+	uint8_t m_mainMemory[MEM_SIZE];
+	int m_l1Queries;
+	int m_l1Misses;
+	int m_vQueries;
+	int m_vMisses;
+	int m_l2Queries;
+	int m_l2Misses;
 };
 
 
