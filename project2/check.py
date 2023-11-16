@@ -1,5 +1,6 @@
 import subprocess, textwrap
 from functools import reduce
+from argparse import ArgumentParser
 
 TESTS = [
     # Filename, expected output
@@ -12,19 +13,28 @@ TESTS_DIRECTORY = 'traces/'
 EPSILON = 1e-4
 
 def main():
+    parser = ArgumentParser()
+    parser.add_argument('-v', '--verbose', action='store_true')
+    verbose = parser.parse_args().verbose
+
     n_passed = 0
     for test in TESTS:
         filename, expected = test[0], test[1:]
-        result = subprocess.run([EXECUTABLE_PATH, f'{TESTS_DIRECTORY}{filename}'], stdout=subprocess.PIPE)
+        result = subprocess.run([EXECUTABLE_PATH, f'{TESTS_DIRECTORY}{filename}'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         actual = extract_output(result.stdout.decode())
+        stderr = result.stderr.decode()
         if compare_output(expected, actual):
-            print(f'========== {filename} ✅', end='')
+            print(f'========== {filename} ✅')
+            if verbose and len(stderr) > 0:
+                print(f'stderr:\n{stderr}')
             n_passed += 1
         else:
-            print(textwrap.dedent(f'''
+            print(textwrap.dedent(f'''\
                 ========== {filename} ❌
                 Expected: {expected}
                 Received: {actual}'''))
+            if len(stderr) > 0:
+                print(f'stderr:\n{stderr}')
     print(f'===== {n_passed}/{len(TESTS)} tests passed')
     if n_passed == len(TESTS):
         exit(0)

@@ -6,6 +6,9 @@ all: clean build
 check: build
 	python3 check.py
 
+check-verbose: build
+	python3 check.py -v
+
 debug: *cpp *.h
 	$(CC) $(DEBUG_FLAGS) *.cpp -o memory_driver
 

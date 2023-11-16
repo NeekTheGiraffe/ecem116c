@@ -39,7 +39,22 @@ public:
 	void controller(const Instruction& instruction);
 	Stats stats() const;
 private:
+	void setL1WithCascade(int block, uint32_t data);
+	void setVWithCascade(int block, uint32_t data);
+	void setL2WithCascade(int block, uint32_t data);
+	bool setL1IfPresent(int block, uint32_t data);
+	bool setVIfPresent(int block, uint32_t data);
+	bool setL2IfPresent(int block, uint32_t data);
+	bool queryL1(int block, uint32_t& data);
+	// Invalidates entry upon hit
+	bool queryV(int block, uint32_t& data);
+	// Invaliidates entry upon hit
+	bool queryL2(int block, uint32_t& data);
+	uint32_t fetchDataFromMemory(int block) const;
+
 	CacheBlock m_l1[L1_CACHE_SETS];
+	// Invariant:
+	// lru values in valid entries range from 0 to # of valid entries - 1
 	CacheBlock m_v[VICTIM_SIZE];
 	CacheBlock m_l2[L2_CACHE_SETS * L2_CACHE_WAYS];
 	uint8_t m_mainMemory[MEM_SIZE];
