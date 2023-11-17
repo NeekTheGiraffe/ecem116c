@@ -4,9 +4,9 @@ from argparse import ArgumentParser
 
 TESTS = [
     # Filename, expected output
-    ('mini_debug.txt', 0.55, 1.0, 60.95),
-    ('victim-debug.txt', 0.79167, 1.0, 78.29167),
-    ('L2-test.txt', 0.88889, 0.83333, 83.07407),
+    ('mini_debug.txt', 0.25, 1.0, 28.25),
+    ('victim-debug.txt', 0.72727, 1.0, 60.63636),
+    ('L2-test.txt', 0.82353, 0.71429, 67.23529),
 ]
 EXECUTABLE_PATH = './memory_driver'
 TESTS_DIRECTORY = 'traces/'

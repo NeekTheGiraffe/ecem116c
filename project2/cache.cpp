@@ -80,7 +80,6 @@ void Memory::setL1WithCascade(int block, uint32_t data)
 bool Memory::setL1IfPresent(int block, uint32_t data)
 {
 	int index = block % L1_CACHE_SETS, tag = block / L1_CACHE_SETS;
-	m_l1Queries++;
 	if (m_l1[index].valid && m_l1[index].tag == tag)
 	{
 		m_l1[index].data = data;
@@ -88,7 +87,6 @@ bool Memory::setL1IfPresent(int block, uint32_t data)
 	}
 	else
 	{
-		m_l1Misses++;
 		return false;
 	}
 }
@@ -142,8 +140,6 @@ void Memory::setVWithCascade(int block, uint32_t data)
 }
 bool Memory::setVIfPresent(int block, uint32_t data)
 {
-	// ASSUMES THAT STORES RESET THE LRU
-	m_vQueries++;
 	int found = -1;
 	int nValid = 0;
 	for (int i = 0; i < VICTIM_SIZE; i++)
@@ -160,7 +156,6 @@ bool Memory::setVIfPresent(int block, uint32_t data)
 	}
 	if (found == -1)
 	{
-		m_vMisses++;
 		return false;
 	}
 	for (CacheBlock& b : m_v)
@@ -235,9 +230,7 @@ void Memory::setL2WithCascade(int block, uint32_t data)
 }
 bool Memory::setL2IfPresent(int block, uint32_t data)
 {
-	// ASSUMES THAT STORES RESET THE LRU
 	int index = block % L2_CACHE_SETS, tag = block / L2_CACHE_SETS;
-	m_l2Queries++;
 	int found = -1;
 	int nValid = 0;
 	for (int i = index * L2_CACHE_WAYS; i < (index + 1) * L2_CACHE_WAYS; i++)
@@ -254,7 +247,6 @@ bool Memory::setL2IfPresent(int block, uint32_t data)
 	}
 	if (found == -1)
 	{
-		m_l2Misses++;
 		return false;
 	}
 	for (int i = index * L2_CACHE_WAYS; i < (index + 1) * L2_CACHE_WAYS; i++)
