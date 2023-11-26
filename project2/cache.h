@@ -27,9 +27,9 @@ struct CacheBlock
 
 struct Stats
 {
-	float l1MissRate;
-	float l2MissRate;
-	float aat;
+	double l1MissRate;
+	double l2MissRate;
+	double aat;
 };
 
 class Memory

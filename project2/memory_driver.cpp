@@ -19,7 +19,7 @@ int main (int argc, char* argv[])
 
 	Stats stats = mem.stats();
 
-	std::cout << std::setprecision(6);
+	std::cout << std::setprecision(10);
 	std::cout << "(" << stats.l1MissRate << "," << stats.l2MissRate << "," << stats.aat << ")" << std::endl;
 	return 0;
 }

@@ -282,9 +282,9 @@ uint32_t Memory::fetchDataFromMemory(int block) const
 Stats Memory::stats() const
 {
 	static const int l1HitTime = 1, vHitTime = 1, l2HitTime = 8, mmHitTime = 100;
-	float l1MissRate = (float)m_l1Misses / m_l1Queries;
-	float vMissRate = (float)m_vMisses / m_vQueries;
-	float l2MissRate = (float)m_l2Misses / m_l2Queries;
+	double l1MissRate = (double)m_l1Misses / m_l1Queries;
+	double vMissRate = (double)m_vMisses / m_vQueries;
+	double l2MissRate = (double)m_l2Misses / m_l2Queries;
 	return {
 		l1MissRate,
 		l2MissRate,
