@@ -1,6 +1,8 @@
 #include "cache.h"
 #include "utils.h"
 
+#include <iomanip>
+
 int main (int argc, char* argv[])
 {
 	if (argc < 2)
@@ -17,6 +19,7 @@ int main (int argc, char* argv[])
 
 	Stats stats = mem.stats();
 
+	std::cout << std::setprecision(6);
 	std::cout << "(" << stats.l1MissRate << "," << stats.l2MissRate << "," << stats.aat << ")" << std::endl;
 	return 0;
 }
