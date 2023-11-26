@@ -15,23 +15,6 @@ Memory::Memory()
 
 void Memory::controller(const Instruction& instruction)
 {
-	std::cerr << "Instruction: " << instruction.MemR << " " << instruction.MemW << " " << instruction.adr << " " << instruction.data << std::endl;
-	std::cerr << "V Contents: ";
-	for (int i = 0; i < VICTIM_SIZE; i++)
-		if (m_v[i].valid)
-			// std::cerr << "(tag=" << m_v[i].tag << ", lru=" << m_v[i].lruPosition << ") ";
-			std::cerr << m_v[i].tag << " ";
-	std::cerr << std::endl;
-	for (int i = 0; i < L2_CACHE_SETS; i++)
-	{
-		for (int w = 0; w < L2_CACHE_WAYS; w++)
-		{
-			CacheBlock& b = m_l2[i * L2_CACHE_WAYS + w];
-			if (b.valid)
-				std::cerr << i << " " << b.tag << " " << b.lruPosition << " " << b.data << std::endl;
-		}
-	}
-
 	bool read = instruction.MemR;
 	int block = instruction.adr / BLOCK_SIZE, offset = instruction.adr % BLOCK_SIZE;
 	if (read)
@@ -168,7 +151,6 @@ bool Memory::setVIfPresent(int block, uint32_t data)
 }
 bool Memory::queryV(int block, uint32_t& data)
 {
-	//std::cerr << "Querying for block " << block;
 	m_vQueries++;
 	int removedLru = -1;
 	for (CacheBlock& b : m_v)
@@ -183,11 +165,9 @@ bool Memory::queryV(int block, uint32_t& data)
 	}
 	if (removedLru == -1)
 	{
-		//std::cerr << "Not found" << std::endl;
 		m_vMisses++;
 		return false;
 	}
-	//std::cerr << "Found" << std::endl;
 	for (CacheBlock& b : m_v)
 	{
 		if (b.valid && b.lruPosition > removedLru)
@@ -198,7 +178,7 @@ bool Memory::queryV(int block, uint32_t& data)
 
 void Memory::setL2WithCascade(int block, uint32_t data)
 {
-	std::cerr << "Setting " << block << std::endl;
+	std::cerr << "Setting L2: " << block << std::endl;
 	int index = block % L2_CACHE_SETS, tag = block / L2_CACHE_SETS;
 	int ejectionIndex = -1;
 	bool ejectionIndexValid = true;
@@ -276,11 +256,9 @@ bool Memory::queryL2(int block, uint32_t& data)
 	}
 	if (removedLru == -1)
 	{
-		//std::cerr << "Not found" << std::endl;
 		m_l2Misses++;
 		return false;
 	}
-	//std::cerr << "Found" << std::endl;
 	for (int i = index * L2_CACHE_WAYS; i < (index + 1) * L2_CACHE_WAYS; i++)
 	{
 		CacheBlock& b = m_l2[i];

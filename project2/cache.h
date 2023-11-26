@@ -39,17 +39,20 @@ public:
 	void controller(const Instruction& instruction);
 	Stats stats() const;
 private:
+	// Utilities for bringing memory blocks to L1 and
+	// sequentially evicting
 	void setL1WithCascade(int block, uint32_t data);
 	void setVWithCascade(int block, uint32_t data);
 	void setL2WithCascade(int block, uint32_t data);
+	// Utilities for SW instructions
 	bool setL1IfPresent(int block, uint32_t data);
 	bool setVIfPresent(int block, uint32_t data);
 	bool setL2IfPresent(int block, uint32_t data);
+	// Look for block in caches and update stats accordingly
 	bool queryL1(int block, uint32_t& data);
-	// Invalidates entry upon hit
 	bool queryV(int block, uint32_t& data);
-	// Invaliidates entry upon hit
 	bool queryL2(int block, uint32_t& data);
+
 	uint32_t fetchDataFromMemory(int block) const;
 
 	CacheBlock m_l1[L1_CACHE_SETS];

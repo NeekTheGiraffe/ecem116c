@@ -11,4 +11,5 @@ struct Instruction
 	uint32_t data; 
 };
 
+// Read the file and convert it to a series of memory instructions
 std::vector<Instruction> parseTrace(const std::string& path);
