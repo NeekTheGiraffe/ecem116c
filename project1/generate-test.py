@@ -1,6 +1,8 @@
 from riscv_assembler.convert import AssemblyConverter as AC
 from argparse import ArgumentParser
 
+# TODO: The AssemblyConverter may not output the correct machine code for sw
+#   instructions. See trace/load-and-store.* 
 def main():
     parser = ArgumentParser()
     parser.add_argument('infile')
