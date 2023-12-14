@@ -1,7 +1,7 @@
 # ECE M116C
 
 Computer assignments for [ECE M116C in Fall '23](https://ssysarch.github.io/ECE_M116C-CS_M151B/F23/index.html)
-at UCLA.
+at UCLA (Computer Systems Architecture), with [Prof. Nader Sehatbakhsh](https://ssysarch.ee.ucla.edu/nader/).
 
 - `project1`: A RISC-V interpreter supporting a limited instruction set.
 - `project2`: A memory controller simulation with a 3-level cache hierarchy.
